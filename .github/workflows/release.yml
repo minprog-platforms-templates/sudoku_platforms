@@ -1,6 +1,6 @@
 # Builds a zip archive of the repository and publishes it as a GitHub Release
 # on every push to main. Releases are versioned by date plus the run number,
-# e.g. v2026.07.02.42, so each push produces a unique, ordered release.
+# e.g. v20260702.42, so each push produces a unique, ordered release.
 
 name: Release
 
