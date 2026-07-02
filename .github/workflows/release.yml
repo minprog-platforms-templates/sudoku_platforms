@@ -1,0 +1,37 @@
+# Builds a zip archive of the repository and publishes it as a GitHub Release
+# on every push to main. Releases are versioned by date plus the run number,
+# e.g. v2026.07.02.42, so each push produces a unique, ordered release.
+
+name: Release
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Compute version
+      id: version
+      run: echo "name=$(date -u +'%Y%m%d').${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
+
+    - name: Build zip archive
+      run: |
+        name="${{ steps.version.outputs.name }}"
+        git archive --format=zip --prefix="sudoku_platforms-${name}/" \
+          -o "sudoku_platforms-${name}.zip" HEAD
+
+    - name: Publish release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: "v${{ steps.version.outputs.name }}"
+        name: "v${{ steps.version.outputs.name }}"
+        files: "sudoku_platforms-${{ steps.version.outputs.name }}.zip"
