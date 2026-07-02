@@ -1,11 +1,14 @@
-# Builds a zip archive of the repository and publishes it as a GitHub Release
-# on every push to main. Releases are versioned by date plus the run number,
-# e.g. v20260702.42, so each push produces a unique, ordered release.
+# Publishes a zip archive of the repository as a GitHub Release after the
+# "Checks" workflow succeeds on main. Releases are versioned by date plus the
+# run number, e.g. v20260702.42, so each push produces a unique, ordered release.
+# Can also be run manually (workflow_dispatch), which skips the checks gate.
 
 name: Release
 
 on:
-  push:
+  workflow_run:
+    workflows: ["Checks"]
+    types: [completed]
     branches: [ main ]
   workflow_dispatch:
 
@@ -15,9 +18,15 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    # Only release when the checks passed (or when triggered manually).
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        # Archive the exact commit that passed checks (falls back to the
+        # branch head for manual runs).
+        ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
     - name: Compute version
       id: version
@@ -34,4 +43,5 @@ jobs:
       with:
         tag_name: "v${{ steps.version.outputs.name }}"
         name: "v${{ steps.version.outputs.name }}"
+        target_commitish: ${{ github.event.workflow_run.head_sha || github.sha }}
         files: "sudoku_platforms-${{ steps.version.outputs.name }}.zip"
