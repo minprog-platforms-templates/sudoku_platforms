@@ -1,6 +1,6 @@
 ## Installation
 
-This project requires Python version 3.7 or later. To install all dependencies run: 
+This project requires Python version 3.15 or later. To install all dependencies run: 
 
 ```
 pip3 install -r requirements.txt

@@ -1,11 +1,10 @@
-from __future__ import annotations
-from typing import Iterable, Sequence
+from collections.abc import Iterable
 
 
 class Sudoku:
     """A mutable sudoku puzzle."""
 
-    def __init__(self, puzzle: Iterable[Iterable]):
+    def __init__(self, puzzle: Iterable[Iterable[object]]):
         self._grid: list[str] = []
 
         for puzzle_row in puzzle:
@@ -125,7 +124,7 @@ class Sudoku:
     def block_index_of(self, x: int, y: int) -> int:
         """Returns the index of a block from an index (x,y)."""
         return (y // 3) * 3 + x // 3
-        
+
     def is_solved(self) -> bool:
         """
         Returns True if and only if all rows, columns and blocks contain

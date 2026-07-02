@@ -1,6 +1,3 @@
-from __future__ import annotations
-from typing import Union
-
 import argparse
 import os
 import sys
@@ -8,7 +5,7 @@ import sys
 from sudoku import Sudoku, load_from_file
 
 
-def solve(sudoku: Sudoku) -> Union[Sudoku, None]:
+def solve(sudoku: Sudoku) -> Sudoku | None:
     """
     Solve a Sudoku puzzle using Depth First Search (DFS).
     Returns a Sudoku puzzle if the puzzle is solvable, None otherwise.
